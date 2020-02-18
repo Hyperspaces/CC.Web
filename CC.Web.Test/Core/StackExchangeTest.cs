@@ -43,6 +43,12 @@ namespace CC.Web.Test.Core
 
             var type = redisDb.KeyType("countWord");
             Assert.AreEqual("String", type.ToString());
+
+            redisDb.StringSet("require", "first");
+            redisDb.StringSet("require", "second");
+            redisValue = redisDb.StringGet("require");
+
+            Assert.AreEqual("second", redisValue.ToString());
         }
 
         [TestCase("LK", "LV", 2)]
@@ -50,12 +56,45 @@ namespace CC.Web.Test.Core
         {
             redisDb.ListRightPush(key, value);
             redisDb.ListRightPush(key, value + "E");
+            redisDb.ListLeftPush(key, value.Substring(0,1));
+            redisDb.ListRightPush(key, value.Insert(0,"O") + "E");
+
+            var rangeList = redisDb.ListRange(key, 1, 2);
+            Assert.AreEqual("2", rangeList.Length);
 
             var listKey = redisDb.ListGetByIndex(key, 0);
+            redisDb.ListLeftPop(key);
             Assert.AreEqual(value, listKey.ToString());
 
             var listKey2 = redisDb.ListRightPop(key);
             Assert.AreEqual(value + "E", listKey2.ToString());
+        }
+
+        [TestCase("obj")]
+        public void HashTest(string key) {
+            redisDb.HashSet(key, new HashEntry[] { new HashEntry("one", "first"), new HashEntry("two", "second"), new HashEntry("three", "third") });
+            var keys = redisDb.HashKeys(key);
+            Assert.AreEqual(3, keys.Length);
+
+            var values = redisDb.HashValues(key);
+            Assert.AreEqual(3, values.Length);
+
+            var two = redisDb.HashGet(key, "two");
+            Assert.AreEqual("second", two.ToString());
+        }
+
+        [TestCase("obj")]
+        public void SetTest(string key)
+        {
+            redisDb.tag(key, new HashEntry[] { new HashEntry("one", "first"), new HashEntry("two", "second"), new HashEntry("three", "third") });
+            var keys = redisDb.HashKeys(key);
+            Assert.AreEqual(3, keys.Length);
+
+            var values = redisDb.HashValues(key);
+            Assert.AreEqual(3, values.Length);
+
+            var two = redisDb.HashGet(key, "two");
+            Assert.AreEqual("second", two.ToString());
         }
     }
 }
