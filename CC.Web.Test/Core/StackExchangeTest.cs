@@ -57,17 +57,17 @@ namespace CC.Web.Test.Core
             redisDb.ListRightPush(key, value);
             redisDb.ListRightPush(key, value + "E");
             redisDb.ListLeftPush(key, value.Substring(0,1));
-            redisDb.ListRightPush(key, value.Insert(0,"O") + "E");
+            redisDb.ListRightPush(key, value.Insert(1,"O") + "E");
 
             var rangeList = redisDb.ListRange(key, 1, 2);
-            Assert.AreEqual("2", rangeList.Length);
+            Assert.AreEqual(2, rangeList.Length);
 
             var listKey = redisDb.ListGetByIndex(key, 0);
-            redisDb.ListLeftPop(key);
-            Assert.AreEqual(value, listKey.ToString());
+            Assert.AreEqual("L", listKey.ToString());
 
+            redisDb.ListLeftPop(key);
             var listKey2 = redisDb.ListRightPop(key);
-            Assert.AreEqual(value + "E", listKey2.ToString());
+            Assert.AreEqual("LOVE", listKey2.ToString());
         }
 
         [TestCase("obj")]
@@ -83,18 +83,32 @@ namespace CC.Web.Test.Core
             Assert.AreEqual("second", two.ToString());
         }
 
-        [TestCase("obj")]
-        public void SetTest(string key)
+        [TestCase("set1","set2")]
+        public void SetTest(string key1,string key2)
         {
-            redisDb.tag(key, new HashEntry[] { new HashEntry("one", "first"), new HashEntry("two", "second"), new HashEntry("three", "third") });
-            var keys = redisDb.HashKeys(key);
-            Assert.AreEqual(3, keys.Length);
+            redisDb.SetAdd(key1, new RedisValue[] { "card1", "card2", "card3" });
+            redisDb.SetAdd(key2, new RedisValue[] { "card3", "card4", "card5" });
 
-            var values = redisDb.HashValues(key);
-            Assert.AreEqual(3, values.Length);
+            var differenceSet = redisDb.SetCombine(SetOperation.Difference, key1, key2);
+            var IntersectSet = redisDb.SetCombine(SetOperation.Intersect, key1, key2);
+            var UnionSet = redisDb.SetCombine(SetOperation.Union, key1, key2);
 
-            var two = redisDb.HashGet(key, "two");
-            Assert.AreEqual("second", two.ToString());
+            Assert.AreEqual(2, differenceSet.Length);
+            Assert.AreEqual(1, IntersectSet.Length);
+            Assert.AreEqual(5, UnionSet.Length);
+        }
+
+        [TestCase("SortedSet1")]
+        public void SortedSetTest(string key)
+        {
+            redisDb.SortedSetAdd(key, "card1", 1 );
+            redisDb.SortedSetAdd(key, "card3", 3);
+            redisDb.SortedSetAdd(key, "card2", 2);
+
+            var withScoresSet = redisDb.SortedSetRangeByRankWithScores(key, 0, -1);
+
+            Assert.AreEqual("card2", withScoresSet[1].Element.ToString());
+            Assert.AreEqual((double)2, withScoresSet[1].Score);
         }
     }
 }

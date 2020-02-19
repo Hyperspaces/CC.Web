@@ -16,7 +16,7 @@ namespace CC.Web.Test.Core
         [SetUp]
         public void Setup()
         {
-            var redis = new RedisClient(RedisConfig.DefaultHost,RedisConfig.DefaultPort,"a3101170z");
+            var redis = new RedisClient(RedisConfig.DefaultHost,RedisConfig.DefaultPort);
             RedisClassRedis = redis.As<RedisClass>();
             RedisClasses = new List<RedisClass>();
             RedisClasses.Add(new RedisClass()
