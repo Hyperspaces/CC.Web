@@ -1,0 +1,2 @@
+2020-02-22 19:20:29,469 [9] DEBUG NetCoreLogTestLogger [(null)] - Base Config Log Debug start
+2020-02-22 19:20:29,545 [9] DEBUG NetCoreLogTestLogger [(null)] - RequestPath=/api/values

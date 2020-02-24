@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using CC.Web.Api.Filter;
+using CC.Web.Dao;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using ServiceStack.Redis;
 
 namespace CC.Web.Api
@@ -27,7 +23,9 @@ namespace CC.Web.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<IRedisClientsManager>(new BasicRedisClientManager());
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc(option => option.Filters.Add(typeof(ActionLogFilter)))
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddDbContext<CCDbContext>(option => option.UseSqlServer(Configuration.GetConnectionString("CCDatabase")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -5,8 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="log4net" Version="2.0.8" />
-    <PackageReference Include="Microsoft.AspNetCore.App" Version="2.2.8" />
+    <ProjectReference Include="..\CC.Web.Model\CC.Web.Model.csproj" />
   </ItemGroup>
 
 </Project>
