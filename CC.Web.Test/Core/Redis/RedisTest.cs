@@ -7,7 +7,7 @@ using System.Threading;
 
 namespace CC.Web.Test.Core
 {
-    public class StackExchangeTest
+    public class RedisTest
     {
         private IDatabase redisDb { get; set; }
 

@@ -7,12 +7,17 @@ namespace CC.Web.Model
     /// <summary>
     /// 基础公共类
     /// </summary>
-    public class BaseModel
+    public class BaseModel : IEntity
     {
         /// <summary>
         /// 唯一标识符
         /// </summary>
-        public string Id { get; set; }
+        public Guid Id { get; set; }
+
+        /// <summary>
+        /// 删除标识
+        /// </summary>
+        public bool Deleted { get; set; }
 
         /// <summary>
         /// 插入时间
@@ -27,6 +32,6 @@ namespace CC.Web.Model
         /// <summary>
         /// 行记录
         /// </summary>
-        public string RowVersion { get; set; }
+        public int RowVersion { get; set; }
     }
 }

@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using CC.Web.Dao.Core;
+using CC.Web.Model.System;
 
 namespace CC.Web.Dao.System
 {
-    public class UserDao
+    public class UserDao : BaseDao<User>, IUserDao
     {
     }
 }

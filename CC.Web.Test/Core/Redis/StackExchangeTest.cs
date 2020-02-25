@@ -12,7 +12,8 @@ namespace CC.Web.Test.Core
         private IDatabase RedisDb { get; set; }
 
         [SetUp]
-        public void Setup() {
+        public void Setup()
+        {
             var conn = ConnectionMultiplexer.Connect("localhost,password=a3101170z");
             RedisDb = conn.GetDatabase();
         }
