@@ -8,6 +8,21 @@ namespace CC.Web.Utility
     public class EncryptHelper
     {
         /// <summary>
+        /// Hash计算
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static string ComputeHash(string value)
+        {
+            using (var cryptoServiceProvider = new SHA512CryptoServiceProvider())
+            {
+                var bytes = Encoding.UTF8.GetBytes(value);
+                var hash = cryptoServiceProvider.ComputeHash(bytes);
+                return Convert.ToBase64String(hash);
+            }
+        }
+
+        /// <summary>
         /// SHA256加密
         /// </summary>
         /// <param name="sourceData">源数据</param>

@@ -10,5 +10,19 @@ namespace CC.Web.Service.System
     public interface IUserService : IBaseService<User>
     {
         Guid Add(UserDto userDto);
+
+        /// <summary>
+        /// 通过用户名密码查询
+        /// </summary>
+        /// <param name="loginDto"></param>
+        /// <returns></returns>
+        User FindUserByNameAndPwd(string userName,string password);
+
+        /// <summary>
+        /// 指定的用户获得Token
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        string RequestToken(User user);
     }
 }
