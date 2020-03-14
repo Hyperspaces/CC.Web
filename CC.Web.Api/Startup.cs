@@ -13,7 +13,15 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ServiceStack.Redis;
 using System;
+using System.IdentityModel.Tokens.Jwt;
 using System.Reflection;
+using IdentityModel;
+using IdentityServer4;
+using IdentityServer4.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
 
 namespace CC.Web.Api
 {
@@ -34,6 +42,41 @@ namespace CC.Web.Api
                 .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
             services.AddDbContext<CCDbContext>(option => 
             option.UseSqlServer(Configuration.GetConnectionString("CCDatabase"), b => b.MigrationsAssembly("CC.Web.Api")));
+
+            // 清除JWT映射关系（会修改返回的token）
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+
+            services.AddAuthentication(options =>
+                {
+                    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
+                }).AddCookie(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddOpenIdConnect(OpenIdConnectDefaults.AuthenticationScheme, options =>
+                {
+                    options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                    options.Authority = "http://localhost:5000";
+                    options.RequireHttpsMetadata = false;
+                    options.ClientId = "CCWebClient";
+                    options.ClientSecret = "CCWebSecret";
+                    options.SaveTokens = true;
+                    options.ResponseType = "code"; ;
+
+                    options.Scope.Clear();
+
+                    options.Scope.Add("api1");
+                    options.Scope.Add(IdentityServerConstants.StandardScopes.OpenId);
+                    options.Scope.Add(IdentityServerConstants.StandardScopes.Profile);
+                    options.Scope.Add("roles");
+
+                    options.Scope.Add(OidcConstants.StandardScopes.OfflineAccess);
+
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        NameClaimType = JwtClaimTypes.Name,
+                        RoleClaimType = JwtClaimTypes.Role,
+                    };
+
+                });
 
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddSingleton<IUserService, UserService>();
@@ -58,15 +101,17 @@ namespace CC.Web.Api
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
+
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
-                endpoints.MapRazorPages();
+                endpoints.MapDefaultControllerRoute()
+                    .RequireAuthorization();
             });
         }
     }
