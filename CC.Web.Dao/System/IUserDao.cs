@@ -8,5 +8,8 @@ namespace CC.Web.Dao.System
 {
     public interface IUserDao : IBaseDao<User>
     {
+        User FindUserByNameAndPwd(string userName, string passWord);
+
+        User FindUserByName(string userName);
     }
 }
