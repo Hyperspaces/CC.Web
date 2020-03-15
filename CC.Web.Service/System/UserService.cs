@@ -23,7 +23,7 @@ namespace CC.Web.Service.System
         {
             if(UserDao.FindUserByName(userDto.UserName) != null)
             {
-                return 
+                throw new ArgumentException("用户名重复");
             }
 
             var encryptPwd = EncryptHelper.ComputeHash(userDto.PassWord);
@@ -55,6 +55,9 @@ namespace CC.Web.Service.System
             var claims = new[]
                 {
                    new Claim(ClaimTypes.Name, user.UserName),
+                   new Claim(ClaimTypes.Gender, "1111"),
+                   new Claim(ClaimTypes.Uri, "222"),
+
                };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Auth:JwtKey"]));
@@ -70,7 +73,6 @@ namespace CC.Web.Service.System
                 expires: DateTime.Now.AddMinutes(Convert.ToInt32(expire)),
                 signingCredentials: creds
                 );
-
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }

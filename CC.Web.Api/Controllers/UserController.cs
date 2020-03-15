@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using CC.Web.Dto.System;
+﻿using CC.Web.Dto.System;
 using CC.Web.Service.System;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CC.Web.Api.Controllers
 {
+    [ApiController]
+    [Route("api/[controller]")]
     [Authorize]
-    [Route("api/user")]
     public class UserController : Controller
     {
         private IUserService _userService;
@@ -20,13 +17,21 @@ namespace CC.Web.Api.Controllers
             _userService = userService;
         }
 
+        [HttpGet]
+        public IActionResult Index()
+        {
+            var user = HttpContext.User;
+            return Ok("ok");
+        }
+
         [HttpPost]
+        [AllowAnonymous]
         public IActionResult PostUser([FromBody]UserDto user)
         {
             return Created(_userService.Add(user).ToString(), user);
         }
 
-        [HttpPost("token")]
+        [HttpGet("token/{userName}/{password}")]
         [AllowAnonymous]
         public IActionResult Token(string userName, string password)
         {

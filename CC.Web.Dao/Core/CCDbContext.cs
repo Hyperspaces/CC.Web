@@ -7,6 +7,7 @@ namespace CC.Web.Dao.Core
     {
         public CCDbContext(DbContextOptions<CCDbContext> options) : base(options) 
         { 
+
         }
 
         public DbSet<User> Users { get; set; }
