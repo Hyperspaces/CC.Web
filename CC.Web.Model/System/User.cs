@@ -23,5 +23,10 @@ namespace CC.Web.Model.System
         /// 昵称
         /// </summary>
         public string NickName { get; set; }
+
+        /// <summary>
+        /// 文章
+        /// </summary>
+        public List<Article> Articles { get; set; }
     }
 }

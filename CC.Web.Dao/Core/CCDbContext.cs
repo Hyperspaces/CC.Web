@@ -1,4 +1,5 @@
-﻿using CC.Web.Model.System;
+﻿using CC.Web.Model;
+using CC.Web.Model.System;
 using Microsoft.EntityFrameworkCore;
 
 namespace CC.Web.Dao.Core
@@ -10,6 +11,21 @@ namespace CC.Web.Dao.Core
 
         }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<User>()
+                .Property(e => e.Id)
+                .HasConversion<string>();
+
+            modelBuilder.Entity<Article>()
+                .HasOne(e => e.User)
+                .WithMany(e => e.Articles);
+
+            base.OnModelCreating(modelBuilder);
+        }
+
         public DbSet<User> Users { get; set; }
+
+        public DbSet<Article> Articles { get; set; }
     }
 }

@@ -21,6 +21,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using CC.Web.Api.Core;
 using Microsoft.IdentityModel.Logging;
+using CC.Web.Model.Core;
 
 namespace CC.Web.Api
 {
@@ -37,22 +38,24 @@ namespace CC.Web.Api
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<IRedisClientsManager>(new BasicRedisClientManager());
-            services.AddControllers(option => option.Filters.Add(typeof(ActionLogFilter)))
-                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+            services.AddControllers(option => 
+            {
+                option.Filters.Add(typeof(ActionLogFilter));
+                option.Filters.Add(typeof(ContextResourceFilter));
+            })
+            .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
             services.AddDbContext<CCDbContext>(option =>
             option.UseSqlServer(Configuration.GetConnectionString("CCDatabase"), 
                 b => b.MigrationsAssembly("CC.Web.Dao")));
 
-            // 清除JWT映射关系（会修改返回的token）
-            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
-
-
-
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-            services.AddSingleton<IUserService, UserService>();
+            services.AddScoped<IWorkContext, WorkContext>();
 
             //ConfigureIdentityService(services);
+
+            // 清除JWT映射关系（会修改返回的token）
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
@@ -72,6 +75,7 @@ namespace CC.Web.Api
                         ValidateLifetime = true,//是否验证失效时间d
                     };
                 });
+
             IdentityModelEventSource.ShowPII = true;
 
             //autoFac

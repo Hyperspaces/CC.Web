@@ -57,7 +57,7 @@ namespace CC.Web.Service.System
                    new Claim(ClaimTypes.Name, user.UserName),
                    new Claim(ClaimTypes.Gender, "1111"),
                    new Claim(ClaimTypes.Uri, "222"),
-
+                   new Claim("UserId", user.Id.ToString()),
                };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Auth:JwtKey"]));
