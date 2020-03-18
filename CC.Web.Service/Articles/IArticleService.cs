@@ -9,6 +9,18 @@ namespace CC.Web.Service.Articles
 {
     public interface IArticleService : IBaseService<Article>
     {
-        ArticleDto AddArtcile(AddArticleDto addArticleDto);
+        /// <summary>
+        /// 添加文章
+        /// </summary>
+        /// <param name="addArticleDto"></param>
+        /// <returns></returns>
+        ArticleDto AddArtcile(ArticleAddDto addArticleDto);
+
+        /// <summary>
+        /// 根据UserId获取文章
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        List<ArticleDto> GetArtciles(Guid userId);
     }
 }

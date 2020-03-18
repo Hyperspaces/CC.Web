@@ -1,6 +1,7 @@
 ﻿using CC.Web.Model;
 using CC.Web.Model.System;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace CC.Web.Dao.Core
 {
@@ -15,7 +16,7 @@ namespace CC.Web.Dao.Core
         {
             modelBuilder.Entity<User>()
                 .Property(e => e.Id)
-                .HasConversion<string>();
+                .HasConversion<Guid>();
 
             modelBuilder.Entity<Article>()
                 .HasOne(e => e.User)

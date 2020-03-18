@@ -26,9 +26,10 @@ namespace CC.Web.Api.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public IActionResult PostUser([FromBody]UserDto user)
+        public IActionResult PostUser([FromBody]UserAddDto user)
         {
-            return Created(_userService.Add(user).ToString(), user);
+            var userDto = _userService.Add(user);
+            return Created(userDto.Id.ToString(), user);
         }
 
         [HttpGet("token/{userName}/{password}")]

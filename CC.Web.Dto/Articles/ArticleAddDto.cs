@@ -4,7 +4,7 @@ using System.Text;
 
 namespace CC.Web.Dto.Articles
 {
-    public class AddArticleDto
+    public class ArticleAddDto
     {
         /// <summary>
         /// 标题

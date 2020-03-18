@@ -4,10 +4,8 @@ using System.Text;
 
 namespace CC.Web.Dto.System
 {
-   public class UserDto
-   {
-        public Guid Id { get; set; }
-
+    public class UserAddDto
+    {
         /// <summary>
         /// 用户名
         /// </summary>
@@ -22,5 +20,5 @@ namespace CC.Web.Dto.System
         /// 昵称
         /// </summary>
         public string NickName { get; set; }
-   }
+    }
 }

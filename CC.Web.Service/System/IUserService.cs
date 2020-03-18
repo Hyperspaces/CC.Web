@@ -9,7 +9,12 @@ namespace CC.Web.Service.System
 {
     public interface IUserService : IBaseService<User>
     {
-        Guid Add(UserDto userDto);
+        /// <summary>
+        /// 添加用户
+        /// </summary>
+        /// <param name="userDto"></param>
+        /// <returns></returns>
+        UserDto Add(UserAddDto userDto);
 
         /// <summary>
         /// 通过用户名密码查询

@@ -8,6 +8,6 @@ namespace CC.Web.Dao.Articles
 {
     public interface IArticleDao : IBaseDao<Article>
     {
-
+        List<Article> FindByUser(Guid userId);
     }
 }

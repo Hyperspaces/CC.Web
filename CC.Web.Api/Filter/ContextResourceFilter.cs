@@ -23,11 +23,11 @@ namespace CC.Web.Api.Filter
         public void OnAuthorization(AuthorizationFilterContext context)
         {
             var userIdClaims = context.HttpContext.User.FindFirst("UserId");
-            if (userIdClaims == null)
-                throw new AccessViolationException("token 信息获取 错误");
-            var user = _userService.Find(Guid.Parse(userIdClaims.Value));
-
-            _workContext.CurUser = user;
+            if (userIdClaims != null) 
+            {
+                var user = _userService.Find(Guid.Parse(userIdClaims.Value));
+                _workContext.CurUser = user;
+            }
         }
 
         public void OnResourceExecuted(ResourceExecutedContext context)

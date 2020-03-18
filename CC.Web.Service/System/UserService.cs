@@ -1,4 +1,5 @@
-﻿using CC.Web.Dao.System;
+﻿using AutoMapper;
+using CC.Web.Dao.System;
 using CC.Web.Dto.System;
 using CC.Web.Model.System;
 using CC.Web.Service.Core;
@@ -19,25 +20,21 @@ namespace CC.Web.Service.System
 
         public IConfiguration Configuration { get; set; }
 
-        public Guid Add(UserDto userDto) 
+        public IMapper Mapper { get; set; }
+
+        public UserDto Add(UserAddDto addUserDto) 
         {
-            if(UserDao.FindUserByName(userDto.UserName) != null)
+            if(UserDao.FindUserByName(addUserDto.UserName) != null)
             {
                 throw new ArgumentException("用户名重复");
             }
 
-            var encryptPwd = EncryptHelper.ComputeHash(userDto.PassWord);
+            var encryptPwd = EncryptHelper.ComputeHash(addUserDto.PassWord);
 
-            var entity = new User()
-            {
-                NickName = userDto.NickName,
-                UserName = userDto.UserName,
-                PassWord = encryptPwd,
-                InsertTime = DateTime.Now,
-                UpdateTime = DateTime.Now
-            };
+            var entity = Mapper.Map<User>(addUserDto);
+            entity.PassWord = encryptPwd;
 
-            return UserDao.Insert(entity);
+            return Mapper.Map<UserDto>(entity);
         }
 
         public User FindUserByNameAndPwd(string userName, string password)

@@ -22,6 +22,7 @@ using System.Text;
 using CC.Web.Api.Core;
 using Microsoft.IdentityModel.Logging;
 using CC.Web.Model.Core;
+using AutoMapper;
 
 namespace CC.Web.Api
 {
@@ -51,6 +52,7 @@ namespace CC.Web.Api
 
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped<IWorkContext, WorkContext>();
+            services.AddSingleton(new AutoMapperProfile().CreateMapper());
 
             //ConfigureIdentityService(services);
 
