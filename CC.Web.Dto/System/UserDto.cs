@@ -14,11 +14,6 @@ namespace CC.Web.Dto.System
         public string UserName { get; set; }
 
         /// <summary>
-        /// 密码
-        /// </summary>
-        public string PassWord { get; set; }
-
-        /// <summary>
         /// 昵称
         /// </summary>
         public string NickName { get; set; }

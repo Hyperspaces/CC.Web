@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace CC.Web.Model
@@ -22,6 +23,7 @@ namespace CC.Web.Model
         /// <summary>
         /// 插入时间
         /// </summary>
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public DateTime InsertTime { get; set; }
 
         /// <summary>

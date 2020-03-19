@@ -10,6 +10,12 @@ namespace CC.Web.Service.System
     public interface IUserService : IBaseService<User>
     {
         /// <summary>
+        /// 通过Id查找
+        /// </summary>
+        /// <param name="userId"></param>
+        UserDto FindUserById(Guid userId);
+
+        /// <summary>
         /// 添加用户
         /// </summary>
         /// <param name="userDto"></param>
@@ -29,5 +35,12 @@ namespace CC.Web.Service.System
         /// <param name="user"></param>
         /// <returns></returns>
         string RequestToken(User user);
+
+        /// <summary>
+        /// 整体更新用户
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="updateUserDto"></param>
+        void UpdateUser(Guid userId, UserUpdateDto updateUserDto);
     }
 }

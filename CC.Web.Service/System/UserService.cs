@@ -22,6 +22,12 @@ namespace CC.Web.Service.System
 
         public IMapper Mapper { get; set; }
 
+        public UserDto FindUserById(Guid userId)
+        {
+            var user = CurDao.Find(userId);
+            return Mapper.Map<UserDto>(user);
+        }
+
         public UserDto Add(UserAddDto addUserDto) 
         {
             if(UserDao.FindUserByName(addUserDto.UserName) != null)
@@ -33,6 +39,9 @@ namespace CC.Web.Service.System
 
             var entity = Mapper.Map<User>(addUserDto);
             entity.PassWord = encryptPwd;
+            entity.Id = Guid.NewGuid();
+
+            CurDao.Insert(entity);
 
             return Mapper.Map<UserDto>(entity);
         }
@@ -44,6 +53,22 @@ namespace CC.Web.Service.System
             if (user == null)
                 throw new UnauthorizedAccessException("登录的用户不存在");
             return user;
+        }
+
+        public void UpdateUser(Guid userId, UserUpdateDto updateUserDto)
+        {
+            var user = CurDao.Find(userId);
+            if (user is null)
+            {
+                throw new ArgumentException("没有找到用户");
+            }
+
+            //entity 转化为 updateDto
+            //传进来的updateDto参数值更新到新建updateDto
+            //把updateDto 映射回 entity (Mapper强大！！！)
+            Mapper.Map(updateUserDto, user);
+
+            CurDao.Update(user);
         }
 
         public string RequestToken(User user)

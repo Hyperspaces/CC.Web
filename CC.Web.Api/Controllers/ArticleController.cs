@@ -26,19 +26,29 @@ namespace CC.Web.Api.Controllers
             _userService = userService;
         }
 
+        /// <summary>
+        /// 添加文章
+        /// </summary>
+        /// <param name="addArticleDto">添加文章Dto</param>
+        /// <returns></returns>
         [HttpPost]
-        public IActionResult PostAddArtcile(ArticleAddDto addArticleDto) 
+        public ActionResult<ArticleDto> PostAddArtcile(ArticleAddDto addArticleDto) 
         {
             var articleDto = _artcileSerice.AddArtcile(addArticleDto);
             return Ok(articleDto);
         }
 
-        [HttpGet("[userId]")]
-        public IActionResult GetArtciles(Guid userId) 
+        /// <summary>
+        /// 获取文章
+        /// </summary>
+        /// <param name="userId">用户ID</param>
+        /// <returns></returns>
+        [HttpGet("{userId}")]
+        public ActionResult<ArticleDto> GetArtciles(Guid userId) 
         {
             var user = _userService.Find(userId);
             if (user == null)
-                return BadRequest("未找到用户");
+                return NotFound("未找到用户");
 
             return Ok(_artcileSerice.GetArtciles(userId));
         }

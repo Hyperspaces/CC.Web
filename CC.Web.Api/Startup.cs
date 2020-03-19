@@ -1,8 +1,9 @@
 ﻿using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using CC.Web.Api.Core;
 using CC.Web.Api.Filter;
 using CC.Web.Dao.Core;
-using CC.Web.Service.System;
+using CC.Web.Model.Core;
 using IdentityModel;
 using IdentityServer4;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -14,15 +15,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
 using ServiceStack.Redis;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
-using CC.Web.Api.Core;
-using Microsoft.IdentityModel.Logging;
-using CC.Web.Model.Core;
-using AutoMapper;
+using Microsoft.OpenApi.Models;
+using Newtonsoft.Json.Serialization;
 
 namespace CC.Web.Api
 {
@@ -44,7 +44,16 @@ namespace CC.Web.Api
                 option.Filters.Add(typeof(ActionLogFilter));
                 option.Filters.Add(typeof(ContextResourceFilter));
             })
+            .AddNewtonsoftJson(setup =>
+            {
+                setup.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+            })
             .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+
+            services.AddSwaggerGen(c => 
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "CC.Web.Api", Version = "v1" });
+            });
 
             services.AddDbContext<CCDbContext>(option =>
             option.UseSqlServer(Configuration.GetConnectionString("CCDatabase"), 
@@ -139,6 +148,13 @@ namespace CC.Web.Api
             //app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseSwagger();
+
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "CC.Web.Api V1");
+            });
 
             app.UseAuthentication();
             app.UseAuthorization();

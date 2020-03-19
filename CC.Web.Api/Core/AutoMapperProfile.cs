@@ -20,7 +20,9 @@ namespace CC.Web.Api.Core
             {
                 //用户
                 cfg.CreateMap<UserAddDto, User>();
-                cfg.CreateMap<User,UserDto>();
+                cfg.CreateMap<User, UserDto>();
+                cfg.CreateMap<UserUpdateDto, User>();
+                cfg.CreateMap<User,UserUpdateDto>();
 
                 //文章
                 cfg.CreateMap<ArticleAddDto, Article>();
